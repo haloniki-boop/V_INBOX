@@ -1,0 +1,102 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* GitOperationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* GitOperationApp.swift */; };
+		A10000000000000000000002 /* GitCommandRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* GitCommandRunner.swift */; };
+		A10000000000000000000003 /* GitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* GitService.swift */; };
+		A10000000000000000000004 /* FinderSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* FinderSync.swift */; };
+		A10000000000000000000005 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* AppKit.framework */; };
+		A10000000000000000000006 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* AppKit.framework */; };
+		A10000000000000000000007 /* FinderSync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* FinderSync.framework */; };
+		A10000000000000000000008 /* GitFinderExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* GitFinderExtension.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A10000000000000000000009 /* FinderSync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* FinderSync.framework */; };
+		A1000000000000000000000A /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* SettingsWindowController.swift */; };
+		A1000000000000000000000B /* GitOperationMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* GitOperationMain.swift */; };
+		A1000000000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* Assets.xcassets */; };
+		A1000000000000000000000D /* BranchGraphWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* BranchGraphWindowController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A30000000000000000000001 = {isa = PBXContainerItemProxy; containerPortal = A40000000000000000000001 /* Project object */; proxyType = 1; remoteGlobalIDString = A50000000000000000000002; remoteInfo = GitFinderExtension; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A60000000000000000000001 /* Embed App Extensions */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (A10000000000000000000008 /* GitFinderExtension.appex in Embed App Extensions */, ); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* GitOperationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitOperationApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* GitCommandRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitCommandRunner.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* GitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitService.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* FinderSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderSync.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* App Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000006 /* Extension Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000007 /* GitOperation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitOperation.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000008 /* GitFinderExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GitFinderExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000009 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		A2000000000000000000000A /* FinderSync.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FinderSync.framework; path = System/Library/Frameworks/FinderSync.framework; sourceTree = SDKROOT; };
+		A2000000000000000000000B /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
+		A2000000000000000000000C /* GitOperationMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitOperationMain.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000000000000000000000E /* BranchGraphWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchGraphWindowController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A70000000000000000000001 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000005 /* AppKit.framework in Frameworks */, A10000000000000000000009 /* FinderSync.framework in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+		A70000000000000000000002 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000006 /* AppKit.framework in Frameworks */, A10000000000000000000007 /* FinderSync.framework in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A80000000000000000000001 = {isa = PBXGroup; children = (A80000000000000000000002 /* GitOperationApp */, A80000000000000000000003 /* GitCore */, A80000000000000000000004 /* GitFinderExtension */, A80000000000000000000005 /* Frameworks */, A80000000000000000000006 /* Products */, ); sourceTree = "<group>"; };
+		A80000000000000000000002 /* GitOperationApp */ = {isa = PBXGroup; children = (A2000000000000000000000C /* GitOperationMain.swift */, A20000000000000000000001 /* GitOperationApp.swift */, A2000000000000000000000B /* SettingsWindowController.swift */, A2000000000000000000000E /* BranchGraphWindowController.swift */, A2000000000000000000000D /* Assets.xcassets */, A20000000000000000000005 /* App Info.plist */, ); path = GitOperationApp; sourceTree = "<group>"; };
+		A80000000000000000000003 /* GitCore */ = {isa = PBXGroup; children = (A20000000000000000000002 /* GitCommandRunner.swift */, A20000000000000000000003 /* GitService.swift */, ); path = Sources/GitCore; sourceTree = "<group>"; };
+		A80000000000000000000004 /* GitFinderExtension */ = {isa = PBXGroup; children = (A20000000000000000000004 /* FinderSync.swift */, A20000000000000000000006 /* Extension Info.plist */, ); path = GitFinderExtension; sourceTree = "<group>"; };
+		A80000000000000000000005 /* Frameworks */ = {isa = PBXGroup; children = (A20000000000000000000009 /* AppKit.framework */, A2000000000000000000000A /* FinderSync.framework */, ); name = Frameworks; sourceTree = "<group>"; };
+		A80000000000000000000006 /* Products */ = {isa = PBXGroup; children = (A20000000000000000000007 /* GitOperation.app */, A20000000000000000000008 /* GitFinderExtension.appex */, ); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* GitOperation */ = {isa = PBXNativeTarget; buildConfigurationList = A90000000000000000000002 /* Build configuration list for PBXNativeTarget GitOperation */; buildPhases = (AA0000000000000000000001 /* Sources */, A70000000000000000000001 /* Frameworks */, AB0000000000000000000001 /* Resources */, A60000000000000000000001 /* Embed App Extensions */, ); buildRules = (); dependencies = (AC0000000000000000000001 /* PBXTargetDependency */, ); name = GitOperation; productName = GitOperation; productReference = A20000000000000000000007 /* GitOperation.app */; productType = "com.apple.product-type.application"; };
+		A50000000000000000000002 /* GitFinderExtension */ = {isa = PBXNativeTarget; buildConfigurationList = A90000000000000000000003 /* Build configuration list for PBXNativeTarget GitFinderExtension */; buildPhases = (AA0000000000000000000002 /* Sources */, A70000000000000000000002 /* Frameworks */, AB0000000000000000000002 /* Resources */, ); buildRules = (); dependencies = (); name = GitFinderExtension; productName = GitFinderExtension; productReference = A20000000000000000000008 /* GitFinderExtension.appex */; productType = "com.apple.product-type.app-extension"; };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A40000000000000000000001 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1600; LastUpgradeCheck = 1600; TargetAttributes = {A50000000000000000000001 = {CreatedOnToolsVersion = 16.0; }; A50000000000000000000002 = {CreatedOnToolsVersion = 16.0; }; }; }; buildConfigurationList = A90000000000000000000001 /* Build configuration list for PBXProject GitOperation */; compatibilityVersion = "Xcode 14.0"; developmentRegion = ja; hasScannedForEncodings = 0; knownRegions = (ja, en, Base, ); mainGroup = A80000000000000000000001; productRefGroup = A80000000000000000000006 /* Products */; projectDirPath = ""; projectRoot = ""; targets = (A50000000000000000000001 /* GitOperation */, A50000000000000000000002 /* GitFinderExtension */, ); };
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AB0000000000000000000001 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A1000000000000000000000C /* Assets.xcassets in Resources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		AB0000000000000000000002 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA0000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A1000000000000000000000B, A10000000000000000000001, A1000000000000000000000A, A1000000000000000000000D, A10000000000000000000002, A10000000000000000000003, ); runOnlyForDeploymentPostprocessing = 0; };
+		AA0000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000004, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AC0000000000000000000001 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = A50000000000000000000002 /* GitFinderExtension */; targetProxy = A30000000000000000000001; };
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AD0000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; MACOSX_DEPLOYMENT_TARGET = 13.0; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Debug; };
+		AD0000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; MACOSX_DEPLOYMENT_TARGET = 13.0; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Release; };
+		AD0000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = GitOperationApp/Info.plist; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks"; MACOSX_DEPLOYMENT_TARGET = 13.0; PRODUCT_BUNDLE_IDENTIFIER = jp.local.gitoperation; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 6.0; }; name = Debug; };
+		AD0000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = GitOperationApp/Info.plist; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks"; MACOSX_DEPLOYMENT_TARGET = 13.0; PRODUCT_BUNDLE_IDENTIFIER = jp.local.gitoperation; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_VERSION = 6.0; }; name = Release; };
+		AD0000000000000000000005 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_ENTITLEMENTS = GitFinderExtension/GitFinderExtension.entitlements; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = GitFinderExtension/Info.plist; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"; MACOSX_DEPLOYMENT_TARGET = 13.0; PRODUCT_BUNDLE_IDENTIFIER = jp.local.gitoperation.finderextension; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 6.0; }; name = Debug; };
+		AD0000000000000000000006 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_ENTITLEMENTS = GitFinderExtension/GitFinderExtension.entitlements; CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = GitFinderExtension/Info.plist; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"; MACOSX_DEPLOYMENT_TARGET = 13.0; PRODUCT_BUNDLE_IDENTIFIER = jp.local.gitoperation.finderextension; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_VERSION = 6.0; }; name = Release; };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000000000000000000001 /* Build configuration list for PBXProject GitOperation */ = {isa = XCConfigurationList; buildConfigurations = (AD0000000000000000000001 /* Debug */, AD0000000000000000000002 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000002 /* Build configuration list for PBXNativeTarget GitOperation */ = {isa = XCConfigurationList; buildConfigurations = (AD0000000000000000000003 /* Debug */, AD0000000000000000000004 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A90000000000000000000003 /* Build configuration list for PBXNativeTarget GitFinderExtension */ = {isa = XCConfigurationList; buildConfigurations = (AD0000000000000000000005 /* Debug */, AD0000000000000000000006 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = A40000000000000000000001 /* Project object */;
+}
