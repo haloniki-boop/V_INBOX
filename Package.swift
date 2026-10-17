@@ -7,7 +7,8 @@ let package = Package(
     platforms: [.macOS(.v13)],
     products: [
         .library(name: "GitCore", targets: ["GitCore"]),
-        .executable(name: "GitCoreSelfTest", targets: ["GitCoreSelfTest"])
+        .executable(name: "GitCoreSelfTest", targets: ["GitCoreSelfTest"]),
+        .executable(name: "GitCoreIntegrationTest", targets: ["GitCoreIntegrationTest"])
     ],
     targets: [
         .target(name: "GitCore"),
@@ -15,6 +16,11 @@ let package = Package(
             name: "GitCoreSelfTest",
             dependencies: ["GitCore"],
             path: "Tests/GitCoreSelfTests"
+        ),
+        .executableTarget(
+            name: "GitCoreIntegrationTest",
+            dependencies: ["GitCore"],
+            path: "Tests/GitCoreIntegrationTests"
         )
     ]
 )

@@ -19,6 +19,9 @@
 		A1000000000000000000000B /* GitOperationMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* GitOperationMain.swift */; };
 		A1000000000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* Assets.xcassets */; };
 		A1000000000000000000000D /* BranchGraphWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* BranchGraphWindowController.swift */; };
+		A1000000000000000000000E /* GitStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* GitStatus.swift */; };
+		A1000000000000000000000F /* GitStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* GitStatus.swift */; };
+		A10000000000000000000010 /* GitBadgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* GitBadgeService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +47,8 @@
 		A2000000000000000000000C /* GitOperationMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitOperationMain.swift; sourceTree = "<group>"; };
 		A2000000000000000000000D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2000000000000000000000E /* BranchGraphWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchGraphWindowController.swift; sourceTree = "<group>"; };
+		A2000000000000000000000F /* GitStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatus.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* GitBadgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitBadgeService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +59,8 @@
 /* Begin PBXGroup section */
 		A80000000000000000000001 = {isa = PBXGroup; children = (A80000000000000000000002 /* GitOperationApp */, A80000000000000000000003 /* GitCore */, A80000000000000000000004 /* GitFinderExtension */, A80000000000000000000005 /* Frameworks */, A80000000000000000000006 /* Products */, ); sourceTree = "<group>"; };
 		A80000000000000000000002 /* GitOperationApp */ = {isa = PBXGroup; children = (A2000000000000000000000C /* GitOperationMain.swift */, A20000000000000000000001 /* GitOperationApp.swift */, A2000000000000000000000B /* SettingsWindowController.swift */, A2000000000000000000000E /* BranchGraphWindowController.swift */, A2000000000000000000000D /* Assets.xcassets */, A20000000000000000000005 /* App Info.plist */, ); path = GitOperationApp; sourceTree = "<group>"; };
-		A80000000000000000000003 /* GitCore */ = {isa = PBXGroup; children = (A20000000000000000000002 /* GitCommandRunner.swift */, A20000000000000000000003 /* GitService.swift */, ); path = Sources/GitCore; sourceTree = "<group>"; };
-		A80000000000000000000004 /* GitFinderExtension */ = {isa = PBXGroup; children = (A20000000000000000000004 /* FinderSync.swift */, A20000000000000000000006 /* Extension Info.plist */, ); path = GitFinderExtension; sourceTree = "<group>"; };
+		A80000000000000000000003 /* GitCore */ = {isa = PBXGroup; children = (A20000000000000000000002 /* GitCommandRunner.swift */, A20000000000000000000003 /* GitService.swift */, A2000000000000000000000F /* GitStatus.swift */, ); path = Sources/GitCore; sourceTree = "<group>"; };
+		A80000000000000000000004 /* GitFinderExtension */ = {isa = PBXGroup; children = (A20000000000000000000004 /* FinderSync.swift */, A20000000000000000000010 /* GitBadgeService.swift */, A20000000000000000000006 /* Extension Info.plist */, ); path = GitFinderExtension; sourceTree = "<group>"; };
 		A80000000000000000000005 /* Frameworks */ = {isa = PBXGroup; children = (A20000000000000000000009 /* AppKit.framework */, A2000000000000000000000A /* FinderSync.framework */, ); name = Frameworks; sourceTree = "<group>"; };
 		A80000000000000000000006 /* Products */ = {isa = PBXGroup; children = (A20000000000000000000007 /* GitOperation.app */, A20000000000000000000008 /* GitFinderExtension.appex */, ); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
@@ -75,8 +80,8 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		AA0000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A1000000000000000000000B, A10000000000000000000001, A1000000000000000000000A, A1000000000000000000000D, A10000000000000000000002, A10000000000000000000003, ); runOnlyForDeploymentPostprocessing = 0; };
-		AA0000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000004, ); runOnlyForDeploymentPostprocessing = 0; };
+		AA0000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A1000000000000000000000B, A10000000000000000000001, A1000000000000000000000A, A1000000000000000000000D, A10000000000000000000002, A10000000000000000000003, A1000000000000000000000E, ); runOnlyForDeploymentPostprocessing = 0; };
+		AA0000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000004, A10000000000000000000010, A1000000000000000000000F, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */

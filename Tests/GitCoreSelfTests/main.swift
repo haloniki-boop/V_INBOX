@@ -216,11 +216,119 @@ private func runTests() throws {
             "ブランチ構成のGitコマンドが正しくない"
         )
     }
+
+    do {
+        let parsed = GitPorcelainParser.parse(
+            " M Sources/Changed.swift\0A  Sources/New.swift\0UU Sources/Conflict.swift\0" +
+            " D Sources/Deleted.swift\0?? Notes/Draft.md\0!! Build/\0"
+        )
+        try expect(parsed["Sources/Changed.swift"] == .modified, "Modified状態を解析できない")
+        try expect(parsed["Sources/New.swift"] == .added, "Added状態を解析できない")
+        try expect(parsed["Sources/Conflict.swift"] == .conflict, "Conflict状態を解析できない")
+        try expect(parsed["Sources/Deleted.swift"] == .deleted, "Deleted状態を解析できない")
+        try expect(parsed["Notes/Draft.md"] == .unversioned, "Unversioned状態を解析できない")
+        try expect(parsed["Build"] == .ignored, "Ignored状態を解析できない")
+    }
+
+    do {
+        let base = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: base) }
+        let runner = GitCommandRunner()
+        _ = try runner.run(arguments: ["init", "--initial-branch=main"], currentDirectory: base)
+        _ = try runner.run(arguments: ["config", "user.name", "Badge Test"], currentDirectory: base)
+        _ = try runner.run(arguments: ["config", "user.email", "badge@example.com"], currentDirectory: base)
+        try "ignored.log\n".write(to: base.appendingPathComponent(".gitignore"), atomically: true, encoding: .utf8)
+        try "initial\n".write(to: base.appendingPathComponent("tracked.txt"), atomically: true, encoding: .utf8)
+        _ = try runner.run(arguments: ["add", ".gitignore", "tracked.txt"], currentDirectory: base)
+        _ = try runner.run(arguments: ["commit", "-m", "initial"], currentDirectory: base)
+
+        try "changed\n".write(to: base.appendingPathComponent("tracked.txt"), atomically: true, encoding: .utf8)
+        try "added\n".write(to: base.appendingPathComponent("added.txt"), atomically: true, encoding: .utf8)
+        _ = try runner.run(arguments: ["add", "added.txt"], currentDirectory: base)
+        try "draft\n".write(to: base.appendingPathComponent("draft.txt"), atomically: true, encoding: .utf8)
+        try "ignored\n".write(to: base.appendingPathComponent("ignored.log"), atomically: true, encoding: .utf8)
+
+        let snapshot = try GitStatusScanner().snapshot(containing: base)
+        try expect(snapshot.status(forRelativePath: "tracked.txt", isDirectory: false) == .modified, "実リポジトリの変更状態を取得できない")
+        try expect(snapshot.status(forRelativePath: "added.txt", isDirectory: false) == .added, "実リポジトリの追加状態を取得できない")
+        try expect(snapshot.status(forRelativePath: "draft.txt", isDirectory: false) == .unversioned, "実リポジトリの未登録状態を取得できない")
+        try expect(snapshot.status(forRelativePath: "ignored.log", isDirectory: false) == .ignored, "実リポジトリの無視状態を取得できない")
+        try expect(snapshot.status(forRelativePath: "", isDirectory: true) == .modified, "フォルダへ配下の最優先状態を集約できない")
+    }
+
+    do {
+        let base = try makeRepositoryDirectory()
+        defer { try? FileManager.default.removeItem(at: base) }
+        let runner = RecordingRunner()
+        _ = try GitService(runner: runner).sync(at: base)
+        try expect(
+            runner.calls.map(\.arguments) == [
+                ["fetch", "--all", "--prune"],
+                ["pull", "--ff-only"],
+                ["push"]
+            ],
+            "同期をFetch、Pull、Pushの順で実行していない"
+        )
+    }
+
+    do {
+        let base = try makeRepositoryDirectory()
+        let item = base.appendingPathComponent("Sources/Test.swift")
+        try FileManager.default.createDirectory(at: item.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data().write(to: item)
+        defer { try? FileManager.default.removeItem(at: base) }
+        let runner = RecordingRunner()
+        let service = GitService(runner: runner)
+        _ = try service.add(at: item, items: [item])
+        _ = try service.diff(at: item, items: [item])
+        _ = try service.revert(at: item, items: [item])
+        try expect(runner.calls[0].arguments == ["add", "--", "Sources/Test.swift"], "追加対象のパスが正しくない")
+        try expect(runner.calls[1].arguments == ["diff", "--", "Sources/Test.swift"], "差分対象のパスが正しくない")
+        try expect(
+            runner.calls[2].arguments == ["restore", "--source=HEAD", "--staged", "--worktree", "--", "Sources/Test.swift"],
+            "変更破棄の対象が正しくない"
+        )
+    }
+
+    do {
+        let base = try makeRepositoryDirectory()
+        defer { try? FileManager.default.removeItem(at: base) }
+        let runner = RecordingRunner()
+        let service = GitService(runner: runner)
+        _ = try service.createBranch(at: base, branchName: "feature/menu")
+        _ = try service.switchBranch(at: base, branchName: "main")
+        _ = try service.merge(at: base, branch: "feature/menu")
+        _ = try service.rebase(at: base, branch: "main")
+        _ = try service.reset(at: base, reference: "HEAD~1")
+        try expect(runner.calls.contains { $0.arguments == ["switch", "--create", "feature/menu"] }, "ブランチを作成できない")
+        try expect(runner.calls.contains { $0.arguments == ["switch", "main"] }, "ブランチを切り替えできない")
+        try expect(runner.calls.contains { $0.arguments == ["merge", "feature/menu"] }, "マージコマンドが正しくない")
+        try expect(runner.calls.contains { $0.arguments == ["rebase", "main"] }, "リベースコマンドが正しくない")
+        try expect(runner.calls.contains { $0.arguments == ["reset", "--mixed", "HEAD~1"] }, "安全なmixed resetになっていない")
+    }
+
+    do {
+        let base = try makeRepositoryDirectory()
+        defer { try? FileManager.default.removeItem(at: base) }
+        let runner = RecordingRunner()
+        let service = GitService(runner: runner)
+        _ = try service.createPatch(at: base, range: "origin/main..HEAD")
+        _ = try service.applyPatch(at: base, patchURL: URL(fileURLWithPath: "/tmp/change.patch"))
+        _ = try service.updateSubmodules(at: base)
+        _ = try service.bisect(at: base, arguments: "good HEAD~2")
+        _ = try service.cleanup(at: base)
+        try expect(runner.calls.contains { $0.arguments == ["format-patch", "origin/main..HEAD"] }, "パッチ作成コマンドが正しくない")
+        try expect(runner.calls.contains { $0.arguments == ["am", "--3way", "/tmp/change.patch"] }, "パッチ適用コマンドが正しくない")
+        try expect(runner.calls.contains { $0.arguments == ["submodule", "update", "--init", "--recursive"] }, "サブモジュール更新コマンドが正しくない")
+        try expect(runner.calls.contains { $0.arguments == ["bisect", "good", "HEAD~2"] }, "Bisectコマンドが正しくない")
+        try expect(runner.calls.contains { $0.arguments == ["clean", "-f", "-d"] }, "Cleanupコマンドが正しくない")
+    }
 }
 
 do {
     try runTests()
-    print("GitCoreSelfTest: 14件すべて成功")
+    print("GitCoreSelfTest: 20件すべて成功")
 } catch {
     print(error)
     exit(1)

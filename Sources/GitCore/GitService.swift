@@ -2,18 +2,66 @@ import Foundation
 
 public enum GitAction: String, CaseIterable, Sendable {
     case clone
+    case sync
     case commit
     case push
     case pull
-    case branch
+    case fetch
+    case showLog
+    case status
+    case diff
+    case diffPrevious
+    case add
+    case remove
+    case rename
+    case revert
+    case createBranch
+    case switchBranch
+    case merge
+    case rebase
+    case reset
+    case stashSave
+    case stashPop
+    case createTag
+    case blame
+    case createPatch
+    case applyPatch
+    case submoduleUpdate
+    case createRepository
+    case bisect
+    case cleanup
 
     public var japaneseTitle: String {
         switch self {
         case .clone: "リポジトリのクローン"
+        case .sync: "同期"
         case .commit: "コミット（変更内容を保存）"
         case .push: "プッシュ（リモートへ送信）"
         case .pull: "プル（リモートから最新版を取得）"
-        case .branch: "ブランチの作成と切り替え"
+        case .fetch: "フェッチ"
+        case .showLog: "ログを表示"
+        case .status: "変更の確認"
+        case .diff: "差分を表示"
+        case .diffPrevious: "前版との差分"
+        case .add: "Gitに追加"
+        case .remove: "Gitから削除"
+        case .rename: "名前変更・移動"
+        case .revert: "元に戻す"
+        case .createBranch: "ブランチを作成"
+        case .switchBranch: "ブランチを切り替え"
+        case .merge: "マージ"
+        case .rebase: "リベース"
+        case .reset: "リセット"
+        case .stashSave: "スタッシュに保存"
+        case .stashPop: "スタッシュを復元"
+        case .createTag: "タグを作成"
+        case .blame: "行ごとの変更者を表示"
+        case .createPatch: "パッチを作成"
+        case .applyPatch: "パッチを適用"
+        case .submoduleUpdate: "サブモジュールを更新"
+        case .createRepository: "ここにリポジトリを作成"
+        case .bisect: "Bisect"
+        case .cleanup: "Cleanup（未追跡ファイルを削除）"
         }
     }
 }
@@ -95,6 +143,19 @@ public struct GitService: @unchecked Sendable {
     }
 
     @discardableResult
+    public func fetch(at selectedURL: URL) throws -> GitCommandResult {
+        try runner.run(arguments: ["fetch", "--all", "--prune"], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func sync(at selectedURL: URL) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        let fetch = try runner.run(arguments: ["fetch", "--all", "--prune"], currentDirectory: root)
+        let pull = try runner.run(arguments: ["pull", "--ff-only"], currentDirectory: root)
+        let push = try runner.run(arguments: ["push"], currentDirectory: root)
+        return combinedResult([fetch, pull, push])
+    }
+
+    @discardableResult
     public func createOrSwitchBranch(at selectedURL: URL, branchName: String) throws -> GitCommandResult {
         let branch = branchName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !branch.isEmpty else { throw GitServiceError.emptyBranchName }
@@ -110,6 +171,134 @@ public struct GitService: @unchecked Sendable {
 
         let arguments = existing.contains(branch) ? ["switch", branch] : ["switch", "--create", branch]
         return try runner.run(arguments: arguments, currentDirectory: root)
+    }
+
+    public func createBranch(at selectedURL: URL, branchName: String) throws -> GitCommandResult {
+        let branch = try nonEmpty(branchName, error: .emptyBranchName)
+        let root = try repositoryRoot(containing: selectedURL)
+        _ = try runner.run(arguments: ["check-ref-format", "--branch", branch], currentDirectory: root)
+        return try runner.run(arguments: ["switch", "--create", branch], currentDirectory: root)
+    }
+
+    public func switchBranch(at selectedURL: URL, branchName: String) throws -> GitCommandResult {
+        let branch = try nonEmpty(branchName, error: .emptyBranchName)
+        return try runner.run(arguments: ["switch", branch], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func showLog(at selectedURL: URL) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(
+            arguments: ["log", "--graph", "--decorate", "--oneline", "--all", "--max-count=300"],
+            currentDirectory: root
+        )
+    }
+
+    public func status(at selectedURL: URL) throws -> GitCommandResult {
+        try runner.run(arguments: ["status", "--short", "--branch"], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func diff(at selectedURL: URL, items: [URL] = []) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(arguments: ["diff"] + pathArguments(items, in: root), currentDirectory: root)
+    }
+
+    public func diffWithPreviousVersion(at selectedURL: URL, items: [URL] = []) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(arguments: ["diff", "HEAD^", "HEAD"] + pathArguments(items, in: root), currentDirectory: root)
+    }
+
+    public func add(at selectedURL: URL, items: [URL]) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(arguments: ["add"] + requiredPathArguments(items, in: root), currentDirectory: root)
+    }
+
+    public func remove(at selectedURL: URL, items: [URL]) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(arguments: ["rm", "-r"] + requiredPathArguments(items, in: root), currentDirectory: root)
+    }
+
+    public func rename(at selectedURL: URL, item: URL, destination: String) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        let target = destination.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !target.isEmpty else { throw GitServiceError.emptyDestination }
+        let source = try relativePath(item, in: root)
+        return try runner.run(arguments: ["mv", "--", source, target], currentDirectory: root)
+    }
+
+    public func revert(at selectedURL: URL, items: [URL]) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(
+            arguments: ["restore", "--source=HEAD", "--staged", "--worktree"] + requiredPathArguments(items, in: root),
+            currentDirectory: root
+        )
+    }
+
+    public func merge(at selectedURL: URL, branch: String) throws -> GitCommandResult {
+        try namedRefCommand("merge", name: branch, at: selectedURL)
+    }
+
+    public func rebase(at selectedURL: URL, branch: String) throws -> GitCommandResult {
+        try namedRefCommand("rebase", name: branch, at: selectedURL)
+    }
+
+    public func reset(at selectedURL: URL, reference: String) throws -> GitCommandResult {
+        let ref = try nonEmpty(reference, error: .emptyReference)
+        return try runner.run(arguments: ["reset", "--mixed", ref], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func stashSave(at selectedURL: URL, message: String) throws -> GitCommandResult {
+        let text = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        let arguments = text.isEmpty ? ["stash", "push", "--include-untracked"] : ["stash", "push", "--include-untracked", "--message", text]
+        return try runner.run(arguments: arguments, currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func stashPop(at selectedURL: URL) throws -> GitCommandResult {
+        try runner.run(arguments: ["stash", "pop"], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func createTag(at selectedURL: URL, name: String) throws -> GitCommandResult {
+        let tag = try nonEmpty(name, error: .emptyTagName)
+        let root = try repositoryRoot(containing: selectedURL)
+        _ = try runner.run(arguments: ["check-ref-format", "refs/tags/\(tag)"], currentDirectory: root)
+        return try runner.run(arguments: ["tag", "--annotate", tag, "--message", tag], currentDirectory: root)
+    }
+
+    public func blame(at selectedURL: URL, item: URL) throws -> GitCommandResult {
+        let root = try repositoryRoot(containing: selectedURL)
+        return try runner.run(arguments: ["blame", "--", try relativePath(item, in: root)], currentDirectory: root)
+    }
+
+    public func createPatch(at selectedURL: URL, range: String) throws -> GitCommandResult {
+        let value = try nonEmpty(range, error: .emptyReference)
+        return try runner.run(arguments: ["format-patch", value], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func applyPatch(at selectedURL: URL, patchURL: URL) throws -> GitCommandResult {
+        try runner.run(arguments: ["am", "--3way", patchURL.path], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func updateSubmodules(at selectedURL: URL) throws -> GitCommandResult {
+        try runner.run(
+            arguments: ["submodule", "update", "--init", "--recursive"],
+            currentDirectory: repositoryRoot(containing: selectedURL)
+        )
+    }
+
+    public func createRepository(at directory: URL) throws -> GitCommandResult {
+        guard isDirectory(directory) else { throw GitServiceError.notDirectory(directory.path) }
+        return try runner.run(arguments: ["init", "--initial-branch=main"], currentDirectory: directory)
+    }
+
+    public func bisect(at selectedURL: URL, arguments: String) throws -> GitCommandResult {
+        let values = arguments.split(whereSeparator: \.isWhitespace).map(String.init)
+        guard !values.isEmpty else { throw GitServiceError.emptyBisectCommand }
+        let allowed = ["start", "good", "bad", "skip", "reset"]
+        guard allowed.contains(values[0]) else { throw GitServiceError.invalidBisectCommand }
+        return try runner.run(arguments: ["bisect"] + values, currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    public func cleanup(at selectedURL: URL) throws -> GitCommandResult {
+        try runner.run(arguments: ["clean", "-f", "-d"], currentDirectory: repositoryRoot(containing: selectedURL))
     }
 
     public func addToGitIgnore(items: [URL]) throws -> GitIgnoreUpdateResult {
@@ -276,6 +465,44 @@ public struct GitService: @unchecked Sendable {
         return fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) && isDirectory.boolValue
     }
 
+    private func namedRefCommand(_ command: String, name: String, at selectedURL: URL) throws -> GitCommandResult {
+        let value = try nonEmpty(name, error: .emptyReference)
+        return try runner.run(arguments: [command, value], currentDirectory: repositoryRoot(containing: selectedURL))
+    }
+
+    private func nonEmpty(_ value: String, error: GitServiceError) throws -> String {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { throw error }
+        return trimmed
+    }
+
+    private func relativePath(_ item: URL, in root: URL) throws -> String {
+        let rootComponents = root.standardizedFileURL.pathComponents
+        let components = item.standardizedFileURL.pathComponents
+        guard components.starts(with: rootComponents), components.count > rootComponents.count else {
+            throw GitServiceError.itemOutsideRepository(item.path)
+        }
+        return components.dropFirst(rootComponents.count).joined(separator: "/")
+    }
+
+    private func pathArguments(_ items: [URL], in root: URL) -> [String] {
+        let paths = items.compactMap { try? relativePath($0, in: root) }
+        return paths.isEmpty ? [] : ["--"] + paths
+    }
+
+    private func requiredPathArguments(_ items: [URL], in root: URL) throws -> [String] {
+        guard !items.isEmpty else { throw GitServiceError.noSelectedItems }
+        return ["--"] + (try items.map { try relativePath($0, in: root) })
+    }
+
+    private func combinedResult(_ results: [GitCommandResult]) -> GitCommandResult {
+        GitCommandResult(
+            exitCode: 0,
+            standardOutput: results.map(\.combinedOutput).filter { !$0.isEmpty }.joined(separator: "\n"),
+            standardError: ""
+        )
+    }
+
     private func output(_ arguments: [String], at directory: URL?) throws -> String {
         try runner.run(arguments: arguments, currentDirectory: directory)
             .standardOutput.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -318,6 +545,13 @@ public enum GitServiceError: LocalizedError, Equatable {
     case noIgnoreItems
     case ignoreItemOutsideRepository(String)
     case invalidIgnorePath(String)
+    case emptyDestination
+    case emptyReference
+    case emptyTagName
+    case emptyBisectCommand
+    case invalidBisectCommand
+    case noSelectedItems
+    case itemOutsideRepository(String)
 
     public var errorDescription: String? {
         switch self {
@@ -334,6 +568,13 @@ public enum GitServiceError: LocalizedError, Equatable {
         case .noIgnoreItems: "Gitに登録しないファイルまたはフォルダを選択してください。"
         case .ignoreItemOutsideRepository(let path): "同じGitリポジトリ内の項目を選択してください: \(path)"
         case .invalidIgnorePath(let path): ".gitignoreへ登録できないファイル名です: \(path)"
+        case .emptyDestination: "移動先のパスを入力してください。"
+        case .emptyReference: "ブランチ名またはコミットを入力してください。"
+        case .emptyTagName: "タグ名を入力してください。"
+        case .emptyBisectCommand: "Bisectの操作を入力してください。"
+        case .invalidBisectCommand: "Bisectは start / good / bad / skip / reset のいずれかを指定してください。"
+        case .noSelectedItems: "対象のファイルまたはフォルダを選択してください。"
+        case .itemOutsideRepository(let path): "Gitリポジトリ外の項目は操作できません: \(path)"
         }
     }
 }
